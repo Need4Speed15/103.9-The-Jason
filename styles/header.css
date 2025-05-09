@@ -1,77 +1,80 @@
 body {
   background-color: rgb(14,33,53);
-  margin: 0;
+  margin-top: 10px;
 }
 
 .header {
   display: flex;
-  height: 150px;
-  background-color: transparent;
+  height: 200px;
+  background-color: rgb(14,33,53);
 }
 
 .header-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgb(14,33,53);
+  display: flex;;
   flex: 1;
+  background-color: rgb(14,33,53);
 }
 
 .logo-button {
-  background-color: blueviolet;
-  height: 80%;
-  padding: 0;
+  display: flex;
+  flex: 1;
+  background-color: rgb(14,33,53);
+  height: 85%;
+  padding: 0px 0px;
+  margin-top: 5px;
+  margin-left: 5px;
   border: none;
-  transition: transform 0.3s ease;
-  margin-top: 30px;
-}
-
-.logo-button:hover {
-  transform: scale(1.1);
+  border-radius: 0px 0px 0px 0px;
+  cursor: pointer;
+  min-height: 50%;
+  min-width: 50%;
 }
 
 .logo {
-  width: 100%;
-  height: 100%;
-  min-width: 190px;
+  width: 100%; /* Makes the logo fill the button's width */
+  height: 100%; /* Makes the logo fill the button's height */
+  object-fit: fill; 
 }
 
 .header-buttons {
   display: flex;
-  flex: 2.25;
-  background-color: transparent;
+  flex: 3;
 }
 
 .home-button, 
 .about-button, 
-.contact-button {
-  background-color: transparent;
+.contact-button,
+.library-button,
+.live-now-button {
+  flex: 1;
+  background-color: rgb(14,33,53);
   border: none;
-  height: 20%;
-  border-radius: 20px;
-  margin-top: 30px;
-  margin-left: 70px;
-  margin-right: 40px;
-  color: white;
+  height: 50px;
+  width: 100px;
+  margin: 30px 30px;
+  padding: 0px 0px;
   font-size: 25px;
   font-weight: bold;
+  color: white;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.5s;
 }
 
-.header-live-now {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  background-color: transparent;
-}
 .live-now-button {
-  display: flex;
   background-color: rgb(218,99,35);
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  font-size: 25px;
-  font-weight: bold;
+  border-radius: 11px;
+  width: 80px;
+  min-width: 80px;
+  font-size: 29px;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 10px;
+}
+
+.home-button:hover, 
+.about-button:hover, 
+.contact-button:hover,
+.library-button:hover,
+.live-now-button:hover {
+  transform: scale(1.1);
 }
