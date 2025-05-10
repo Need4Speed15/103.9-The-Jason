@@ -1,0 +1,26 @@
+.now-playing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: rgb(233, 193, 143);
+  height: 300px;
+  width: 100%;
+}
+
+.now-playing-text {
+  display: flex;
+  font-size: 40px;
+  font-weight: bold;
+  color: rgb(14, 33, 53);
+  margin: 10px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+} 
+
+.now-playing-song {
+  display: flex;
+  font-size: 30px;
+  color: rgb(14, 33, 53);
+  margin: 10px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+}

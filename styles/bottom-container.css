@@ -1,0 +1,7 @@
+.bottom-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(14,33,53);
+  height: 300px;
+}
