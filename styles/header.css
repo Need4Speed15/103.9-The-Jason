@@ -19,6 +19,7 @@ body {
 
 .logo-button {
   background-color: rgb(14,33,53);
+  border: none;
   width: 280px;
   height: 170px;
   margin: 20px 0px 0px 40px;
@@ -36,6 +37,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: fill;
+  border: none;
 }
 
 .header-buttons {

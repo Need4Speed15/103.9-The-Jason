@@ -37,3 +37,17 @@ genreIcons.forEach((icon) => {
   `
 });
 genreIconsElement.innerHTML = genreIconsList
+
+
+//103.9 The Jason Button audio
+let theJasonButton = document.querySelector('.logo-button');
+let theJasonAudio = new Audio('audio/103.9 The Jason.mp3');
+theJasonButton.addEventListener('click', () => {
+  if (theJasonAudio.paused) {
+    theJasonAudio.play();
+  } else {
+    theJasonAudio.pause();
+    theJasonAudio.currentTime = 0;
+  }
+});
+
