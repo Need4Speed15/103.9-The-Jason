@@ -37,8 +37,18 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: transparent;
+  border: none;
   margin: 0px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
+  cursor: pointer;
+  transition: all 0.9s ease;
+}
+
+.microphone-container:hover,
+.headphones-container:hover,
+.mixer-container:hover {
+  transform: scale(1.05);
 }
 
 .pic-text {
