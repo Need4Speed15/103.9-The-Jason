@@ -1,9 +1,36 @@
 .listen-live-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background-color: rgb(14,33,53);
-  height: 200px;
+  height: 380px;
   margin: 0px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
 }
+
+.listen-live-image {
+  width: 55%;
+  height: 60%;
+}
+
+.listen-live-button {
+  width: 12%;
+  height: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.6s ease;
+  margin: 45px 0px 0px 90px;
+  padding: 0px 0px 0px 0px;
+}
+
+.listen-live-button:hover {
+  transform: scale(1.15);
+}
+
+.listen-live-button-image {
+  width: 100%;
+  height: 100%;
+  background: none;
+}
+

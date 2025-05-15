@@ -3,24 +3,38 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background-color: rgb(233, 193, 143);
-  height: 300px;
+  background-color: rgb(128, 150, 180);
+  height: 250px;
   width: 100%;
+  position: relative;
 }
 
 .now-playing-text {
   display: flex;
+  font-family: "Domine", serif;
+  font-weight: 500;
+  font-style: normal;
   font-size: 40px;
-  font-weight: bold;
   color: rgb(14, 33, 53);
-  margin: 10px 0px 0px 0px;
+  margin: 65px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
 } 
 
 .now-playing-song {
   display: flex;
+  font-family: "Domine", serif;
+  font-weight: 400;
+  font-style: normal;
   font-size: 30px;
   color: rgb(14, 33, 53);
-  margin: 10px 0px 0px 0px;
+  margin: 20px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
+}
+
+.guitar-icon {
+  width: 80px;
+  margin: 0px 0px 0px 0px;
+  position: absolute;
+  top: 3%;
+  left: 5%;
 }
