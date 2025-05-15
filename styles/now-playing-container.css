@@ -29,8 +29,10 @@
   font-style: normal;
   font-size: 30px;
   color: rgb(14, 33, 53);
+  opacity: 0;
   margin: 20px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
+  transition: opacity 2s;
 }
 
 .country-icon {

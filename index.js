@@ -1,4 +1,7 @@
 
+const nowPlaying = document.querySelector('.now-playing-song');
+
+
 // Create the Genre Icons Container
 let genreIcons = [
   {
@@ -45,9 +48,15 @@ let theJasonAudio = new Audio('audio/103.9 The Jason.mp3');
 theJasonButton.addEventListener('click', () => {
   if (theJasonAudio.paused) {
     theJasonAudio.play();
+    nowPlaying.innerHTML = '103.9 The Jason';
+    nowPlaying.style.opacity = '1';
   } else {
     theJasonAudio.pause();
+    nowPlaying.style.opacity = '0';
     theJasonAudio.currentTime = 0;
   }
+});
+theJasonAudio.addEventListener('ended', () => {
+  nowPlaying.style.opacity = '0';
 });
 
