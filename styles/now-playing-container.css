@@ -31,10 +31,45 @@
   padding: 0px 0px 0px 0px;
 }
 
-.guitar-icon {
-  width: 80px;
-  margin: 0px 0px 0px 0px;
+.country-icon {
+  width: 90px;
+  top: 15px;
+  left: 50px;
+  rotate: 30deg;
   position: absolute;
-  top: 3%;
-  left: 5%;
+}
+.guitar-icon {
+  width: 90px;
+  top: 30px;
+  left: 1340px;
+  rotate: -60deg;
+  position: absolute;
+}
+.mic-icon {
+  width: 60px;
+  top: 30px;
+  left: 1050px;
+  rotate: 30deg;
+  position: absolute;
+}
+.music-note-icon {
+  width: 90px;
+  top: 30px;
+  left: 410px;
+  rotate: 10deg;
+  position: absolute;
+}
+.record-icon {
+  width: 90px;
+  top: 140px;
+  left: 1180px;
+  rotate: 30deg;
+  position: absolute;
+}
+.radio-icon {
+  width: 100px;
+  top: 130px;
+  left: 220px;
+  rotate: 10deg;
+  position: absolute;
 }
