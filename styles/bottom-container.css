@@ -1,7 +1,50 @@
 .bottom-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   background-color: rgb(14,33,53);
-  height: 300px;
+  height: 400px;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+}
+
+.on-the-air {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 40px;
+  font-weight: 800;
+  margin: 30px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  text-align: center;
+}
+
+.pictures-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  column-gap: 80px;
+  margin: 50px 0px 0px 0px;  
+  padding: 0px 0px 0px 0px;
+}
+
+.microphone-container,
+.headphones-container,
+.mixer-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+}
+
+.pic-text {
+  color: white;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 10px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }

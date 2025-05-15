@@ -1,4 +1,6 @@
 body {
+  display: flex;
+  flex-direction: column;
   background-color: rgb(14,33,53);
   margin: 10px 0px 0px 0px;
 }
