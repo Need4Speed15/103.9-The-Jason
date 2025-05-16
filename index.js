@@ -60,3 +60,98 @@ theJasonAudio.addEventListener('ended', () => {
   nowPlaying.style.opacity = '0';
 });
 
+// Create the Library Container
+let library = [];
+
+const songs = [
+  {
+    name: 'Like The Others',
+  },
+  {
+    name: 'Commercial Break...',
+    audio: 'audio/library/Transition1.mp3',
+  }
+];
+songs.forEach((song) => {
+  let audioObj;
+  if (song.audio) {
+    audioObj = new Audio(song.audio);
+  } else {
+    audioObj = new Audio(`audio/library/${song.name}.mp3`);
+  }
+  audioObj.addEventListener('ended', () => {
+    nowPlaying.innerHTML = '';
+    nowPlaying.style.opacity = '0';
+  });
+  library.push({
+    name: song.name,
+    audio: audioObj,
+  });
+});
+
+function shuffleLibrary() {
+  for (let i = library.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [library[i], library[j]] = [library[j], library[i]];
+  }
+}
+
+// Create interactive Live Buttons
+const liveNowButton = document.querySelector('.live-now-button');
+const listenLiveButton = document.querySelector('.listen-live-button');
+liveNowButton.addEventListener('click', () => {
+  toggleLiveNow();
+  goLive();
+});
+listenLiveButton.addEventListener('click', () => {
+  toggleLiveNow();
+  goLive();
+});
+
+//Main function to play songs
+let isLiveNow = false;
+function toggleLiveNow() {
+  isLiveNow = !isLiveNow;
+};
+
+function goLive(index = 0) {
+  if (!isLiveNow) {
+    nowPlaying.innerHTML = '';
+    library.forEach((song) => {
+      song.audio.pause();
+      song.audio.currentTime = 0;
+      song.audio.onended = null;
+    });
+  } else {
+    if (index === 0) {
+      shuffleLibrary();
+      // Reset all audio before starting
+      library.forEach((song) => {
+        song.audio.pause();
+        song.audio.currentTime = 0;
+        song.audio.onended = null;
+      });
+    }
+
+    if (index < library.length) {
+      const song = library[index];
+      song.audio.play();
+      setTimeout(() => {
+        nowPlaying.innerHTML = song.name;
+        nowPlaying.style.opacity = '1';
+      }, 600);
+
+      song.audio.onended = () => {
+        nowPlaying.innerHTML = '';
+        nowPlaying.style.opacity = '0';
+        goLive(index + 1);
+      };
+    } else {
+      // All songs finished
+      nowPlaying.innerHTML = '';
+      nowPlaying.style.opacity = '0';
+      goLive(0); // Restart the playlist
+    }
+  }
+}
+
