@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles/now-playing-container.css">
     <link rel="stylesheet" href="styles/bottom-container.css">
     <link rel="stylesheet" href="styles/listen-live-container.css">
-    <link rel="stylesheet" href="styles/about.css">
+    <link rel="stylesheet" href="styles/library.css">
   </head>
   <body>
     <div class="header" >
@@ -27,22 +27,13 @@
         <button onclick="location.href='library.html'" class="library-button">Library</button>
       </div>
     </div>
-    <div class="about-container">
-      <h1>About Our Company</h1>
-      <p class="tagline">Driven by money. Built on minimum wage workers.</p>
-    <section class="mission">
-      <h2>Our Mission</h2>
-      <p>To give you the absolute best listening experience. We all know every other station out there is complete DOG SHIT. We are here to bless your ears with the finest tunes known to mankind.</p>
-    </section>
-    <section class="team">
-      <h2>Our Team</h2>
-      <p>Team? nah fam, we’re all about that solo grind. The big man THE JASON built this company all by himself. The only thing we’re missing is a mascot.</p>
-    </section>
-    <section class="history">
-      <h2>Our Story</h2>
-      <p>Founded in 1864. A young ganster known by THE JASON took the small town by storm out in the old west by establishing the first radio station in a saloon, and bagging all the chicks.</p>
-    </section>
-  </div>
+    <div class="library-wrapper">
+      <h1 class="library-heading">Song Library</h1>
+      <p class="library-subtext">Browse our collection of songs below.</p>
+
+      <div class="songs-container" id="songs-container">
+      </div>
+    </div>
     <div class="bottom-container">      
       <div class="on-the-air">ON THE AIR</div>
       <div class="pictures-container">
@@ -63,6 +54,6 @@
         </button>
       </div>
     </div>
-    <script src="index.js"></script>
+    <script type='module' src="index.js"></script>
   </body>
 </html>

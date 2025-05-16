@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles/now-playing-container.css">
     <link rel="stylesheet" href="styles/bottom-container.css">
     <link rel="stylesheet" href="styles/listen-live-container.css">
-    <link rel="stylesheet" href="styles/about.css">
+    <link rel="stylesheet" href="styles/contact.css">
   </head>
   <body>
     <div class="header" >
@@ -27,22 +27,29 @@
         <button onclick="location.href='library.html'" class="library-button">Library</button>
       </div>
     </div>
-    <div class="about-container">
-      <h1>About Our Company</h1>
-      <p class="tagline">Driven by money. Built on minimum wage workers.</p>
-    <section class="mission">
-      <h2>Our Mission</h2>
-      <p>To give you the absolute best listening experience. We all know every other station out there is complete DOG SHIT. We are here to bless your ears with the finest tunes known to mankind.</p>
-    </section>
-    <section class="team">
-      <h2>Our Team</h2>
-      <p>Team? nah fam, we’re all about that solo grind. The big man THE JASON built this company all by himself. The only thing we’re missing is a mascot.</p>
-    </section>
-    <section class="history">
-      <h2>Our Story</h2>
-      <p>Founded in 1864. A young ganster known by THE JASON took the small town by storm out in the old west by establishing the first radio station in a saloon, and bagging all the chicks.</p>
-    </section>
-  </div>
+    <div class="contact-container">
+      <h1 class="contact-heading">Contact Us</h1>
+      <p class="contact-subtext">Have questions? We'll tolerate hearing from you!</p>
+
+      <form class="contact-form">
+        <div class="form-group">
+          <label class="form-label" for="name">Name</label>
+          <input class="form-input" type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input class="form-input" type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="message">Message</label>
+          <textarea class="form-textarea" id="message" name="message" rows="5" required></textarea>
+        </div>
+
+        <button class="submit-button" type="submit">Send Message</button>
+      </form>
+    </div>
     <div class="bottom-container">      
       <div class="on-the-air">ON THE AIR</div>
       <div class="pictures-container">
@@ -64,5 +71,6 @@
       </div>
     </div>
     <script src="index.js"></script>
+    <script src="goLive.js"></script>
   </body>
 </html>

@@ -39,7 +39,9 @@ genreIcons.forEach((icon) => {
     </div>
   `
 });
-genreIconsElement.innerHTML = genreIconsList
+if (genreIconsElement) {
+  genreIconsElement.innerHTML = genreIconsList;
+}
 
 
 //103.9 The Jason Button audio
@@ -68,9 +70,12 @@ const songs = [
     name: 'Like The Others',
   },
   {
-    name: 'Commercial Break...',
+    name: 'Rebel Souls',
+  },
+  {
+    name: 'You Are Listening To THE JASON',
     audio: 'audio/library/Transition1.mp3',
-  }
+  },
 ];
 songs.forEach((song) => {
   let audioObj;
@@ -97,16 +102,21 @@ function shuffleLibrary() {
 }
 
 // Create interactive Live Buttons
-const liveNowButton = document.querySelector('.live-now-button');
-const listenLiveButton = document.querySelector('.listen-live-button');
-liveNowButton.addEventListener('click', () => {
-  toggleLiveNow();
-  goLive();
-});
-listenLiveButton.addEventListener('click', () => {
-  toggleLiveNow();
-  goLive();
-});
+  const liveNowButton = document.querySelector('.live-now-button');
+  const listenLiveButton = document.querySelector('.listen-live-button');
+  if (liveNowButton) {
+    liveNowButton.addEventListener('click', () => {
+      toggleLiveNow();
+      goLive();
+    });
+  }
+  if (listenLiveButton) {
+    listenLiveButton.addEventListener('click', () => {
+      toggleLiveNow();
+      goLive();
+    });
+  }
+
 
 //Main function to play songs
 let isLiveNow = false;
@@ -154,4 +164,3 @@ function goLive(index = 0) {
     }
   }
 }
-
