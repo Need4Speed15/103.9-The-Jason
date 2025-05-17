@@ -13,8 +13,8 @@
 
 .now-playing-text {
   display: flex;
-  font-family: "Domine", serif;
-  font-weight: 500;
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
   font-style: normal;
   font-size: 40px;
   color: rgb(14, 33, 53);
@@ -24,10 +24,10 @@
 
 .now-playing-song {
   display: flex;
-  font-family: "Domine", serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 30px;
+  font-family: 'Poppins', sans-serif; 
+  font-weight: 700;
+  font-size: 2rem;
+  font-style: italic;
   color: rgb(14, 33, 53);
   opacity: 0;
   margin: 20px 0px 0px 0px;

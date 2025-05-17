@@ -56,6 +56,8 @@ body {
   background-color: rgb(14,33,53);
   color: white;
   height: 40px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
   font-size: 30px;
   font-weight: bold;
   border: none;
@@ -79,19 +81,22 @@ body {
   align-items: center;
   background-color: rgb(14,33,53);
   width: 200px;
-  margin: 0px 55px 0px 0px;
+  margin: 0px 35px 0px 0px;
 }
 .live-now-button {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgb(218,99,35);
-  height: 50px;
+  height: 60px;
+  width: 100%;
   border: none;
   border-radius: 5px;
+  text-align: center;
   color: white;
-  font-size: 40px;
-  font-weight: normal;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
   cursor: pointer;
   margin: 0px 0px 0px 0px;
   padding: 5px 10px 5px 10px;
