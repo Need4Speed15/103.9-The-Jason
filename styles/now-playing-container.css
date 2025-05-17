@@ -1,0 +1,79 @@
+.now-playing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: rgb(82, 131, 195);
+  height: 250px;
+  width: 100%;
+  position: relative;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+}
+
+.now-playing-text {
+  display: flex;
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 40px;
+  color: rgb(14, 33, 53);
+  margin: 65px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+} 
+
+.now-playing-song {
+  display: flex;
+  font-family: 'Poppins', sans-serif; 
+  font-weight: 700;
+  font-size: 2rem;
+  font-style: italic;
+  color: rgb(14, 33, 53);
+  opacity: 0;
+  margin: 20px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  transition: opacity 2s;
+}
+
+.country-icon {
+  width: 90px;
+  top: 15px;
+  left: 50px;
+  rotate: 30deg;
+  position: absolute;
+}
+.guitar-icon {
+  width: 90px;
+  top: 30px;
+  left: 1340px;
+  rotate: -60deg;
+  position: absolute;
+}
+.mic-icon {
+  width: 60px;
+  top: 30px;
+  left: 1050px;
+  rotate: 30deg;
+  position: absolute;
+}
+.music-note-icon {
+  width: 90px;
+  top: 30px;
+  left: 410px;
+  rotate: 10deg;
+  position: absolute;
+}
+.record-icon {
+  width: 90px;
+  top: 140px;
+  left: 1180px;
+  rotate: 30deg;
+  position: absolute;
+}
+.radio-icon {
+  width: 100px;
+  top: 130px;
+  left: 220px;
+  rotate: 10deg;
+  position: absolute;
+}

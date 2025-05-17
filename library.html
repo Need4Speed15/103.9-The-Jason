@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>103.9 The Jason</title>
+    <link rel="icon" href="images/Logo.png" 
+      type="image/png">
+    <link rel="stylesheet" href="styles/fonts.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/now-playing-container.css">
+    <link rel="stylesheet" href="styles/bottom-container.css">
+    <link rel="stylesheet" href="styles/listen-live-container.css">
+    <link rel="stylesheet" href="styles/library.css">
+  </head>
+  <body>
+    <div class="header" >
+      <div class="header-logo"> 
+        <button class="logo-button" >
+          <img src="images/Logo.png" alt="Logo" class="logo"></img>
+        </button>
+      </div>
+      <div class="header-buttons">
+        <button onclick="location.href='index.html'" class="home-button">Home</button>
+        <button onclick="location.href='about.html'" class="about-button">About</button>
+        <button onclick="location.href='contact.html'" class="contact-button">Contact</button>
+        <button onclick="location.href='library.html'" class="library-button">Library</button>
+      </div>
+    </div>
+    <div class="library-wrapper">
+      <h1 class="library-heading">Song Library</h1>
+      <p class="library-subtext">Browse our collection of songs below.</p>
+      <div class="song-library"></div>
+    </div>
+    <div class="bottom-container">      
+      <div class="on-the-air">ON THE AIR</div>
+      <div class="pictures-container">
+        <button class="microphone-container">
+          <img src="images/Microphone.png" alt="Microphone"
+          class="microphone-image"></img>
+          <div class="morning-show pic-text">Morning Show</div>
+        </button>
+        <button class="headphones-container">
+          <img src="images/Headphones.png" alt="Headphones"
+          class="headphones-image"></img>
+          <div class="midday-mix pic-text">Midday Mix</div>
+        </button>
+        <button class="mixer-container">
+          <img src="images/Mixer.png" alt="Mixer"
+          class="mixer-image"></img>
+          <div class="evening-jam pic-text">Evening Podcast</div>
+        </button>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html> 
