@@ -130,21 +130,59 @@ function shuffleLibrary() {
 }
 
 // Create interactive Live Buttons
-  const liveNowButton = document.querySelector('.live-now-button');
-  const listenLiveButton = document.querySelector('.listen-live-button');
-  if (liveNowButton) {
-    liveNowButton.addEventListener('click', () => {
+const introAudio = new Audio('audio/103.9 The Jason Intro.mp3');
+const liveNowButton = document.querySelector('.live-now-button');
+const listenLiveButton = document.querySelector('.listen-live-button');
+if (liveNowButton) {
+  liveNowButton.addEventListener('click', () => {
+    if (!isLiveNow) {
       toggleLiveNow();
-      goLive();
-    });
-  }
-  if (listenLiveButton) {
-    listenLiveButton.addEventListener('click', () => {
+      introAudio.currentTime = 0;
+      introAudio.play();
+      nowPlaying.innerHTML = 'Welcome to 103.9 The Jason';
+      nowPlaying.style.opacity = '1';
+      introAudio.onended = () => {
+        goLive();
+        introAudio.onended = null;
+      };
+    } else {
+      introAudio.pause();
+      nowPlaying.innerHTML = '';
+      nowPlaying.style.opacity = '0';
       toggleLiveNow();
-      goLive();
-    });
-  }
-
+      library.forEach((song) => {
+        song.audio.pause();
+        song.audio.currentTime = 0;
+        song.audio.onended = null;
+      });
+    }
+  });
+}
+if (listenLiveButton) {
+  listenLiveButton.addEventListener('click', () => {
+    if (!isLiveNow) {
+      toggleLiveNow();
+      introAudio.currentTime = 0;
+      introAudio.play();
+      nowPlaying.innerHTML = 'Welcome to 103.9 The Jason';
+      nowPlaying.style.opacity = '1';
+      introAudio.onended = () => {
+        goLive();
+        introAudio.onended = null;
+      };
+    } else {
+      introAudio.pause();
+      nowPlaying.innerHTML = '';
+      nowPlaying.style.opacity = '0';
+      toggleLiveNow();
+      library.forEach((song) => {
+        song.audio.pause();
+        song.audio.currentTime = 0;
+        song.audio.onended = null;
+      });
+    }
+  });
+}
 
 //Main function to play songs
 let isLiveNow = false;

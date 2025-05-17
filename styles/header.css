@@ -63,6 +63,14 @@ body {
   margin: 30px 100px 0px 0px;
   padding: 0px 0px 0px 0px;
   transition: transform 0.5s ease;
+  }
+
+.home-button:active, 
+.about-button:active, 
+.contact-button:active,
+.library-button:active,
+.live-now-button:active {
+  transform: scale(0.3);
 }
 
 .live-now-header {
@@ -89,10 +97,6 @@ body {
   padding: 5px 10px 5px 10px;
 }
 
-.home-button:hover, 
-.about-button:hover, 
-.contact-button:hover,
-.library-button:hover,
 .live-now-button:hover {
   transform: scale(1.2);
 }
