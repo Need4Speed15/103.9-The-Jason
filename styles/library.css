@@ -1,10 +1,10 @@
 .library-wrapper {
-  max-width: 800px;
+  width: 300px;
   margin: 50px auto;
   padding: 30px;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.08);
+  box-shadow: 3px 3px 20px rgba(0,0,0,0.38);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -13,6 +13,7 @@
   color: #da6323;
   text-align: center;
   margin-bottom: 10px;
+  margin-top: 0px;
 }
 
 .library-subtext {
@@ -22,7 +23,30 @@
 }
 
 .songs-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 15px;
+}
+
+.song-name {
+  display: flex;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #07103d;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.play-button {
+  display: block;
+  width: 30%;
+  padding: 5px 10px;
+  background-color: #da6323;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-left: auto;
+  margin-right: 0;
+  cursor: pointer;
 }
