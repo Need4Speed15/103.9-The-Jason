@@ -119,7 +119,7 @@ const songs = [
     name: 'Jason- billions',
   },
   {
-    name: 'Jason- can\'t believe',
+    name: 'Jason- cant believe',
   },
   {
     name: 'Jason- Cody come home',
@@ -161,10 +161,10 @@ const songs = [
     name: 'Jason- it is 8pm',
   },
   {
-    name: 'Jason- it it it it\'s time',
+    name: 'Jason- it it it its time',
   },
   {
-    name: 'Jason- it\'s your mother',
+    name: 'Jason- its your mother',
   },
   {
     name: 'Jason- kms',
@@ -192,6 +192,18 @@ const songs = [
   },
   {
     name: 'Jason- When you call my name',
+  },
+  {
+    name: 'You Are Listening To THE JASON',
+    audio: 'audio/voicemails/Transition1.mp3',
+  },
+  {
+    name: 'You Are Listening To THE JASON',
+    audio: 'audio/voicemails/Transition2.mp3',
+  },
+  {
+    name: 'You Are Listening To THE JASON',
+    audio: 'audio/voicemails/Transition3.mp3',
   },
 ];
 songs.forEach((song) => {
@@ -235,6 +247,7 @@ if (liveNowButton) {
     if (!isLiveNow) {
       toggleLiveNow();
       introAudio.currentTime = 0;
+      introAudio.volume = 0.4; // Set volume
       introAudio.play();
       nowPlaying.innerHTML = 'Welcome to 103.9 The Jason';
       nowPlaying.style.opacity = '1';
@@ -260,6 +273,7 @@ if (listenLiveButton) {
     if (!isLiveNow) {
       toggleLiveNow();
       introAudio.currentTime = 0;
+      introAudio.volume = 0.4; // Set volume 
       introAudio.play();
       nowPlaying.innerHTML = 'Welcome to 103.9 The Jason';
       nowPlaying.style.opacity = '1';
@@ -307,9 +321,10 @@ function goLive(index = 0) {
 
     if (index < library.length) {
       const song = library[index];
+      song.audio.volume = 0.65; // Set volume to 65%
       song.audio.play();
       setTimeout(() => {
-        nowPlaying.innerHTML = song.name;
+        nowPlaying.innerHTML = song.name.replace(/jason- /i, '');
         nowPlaying.style.opacity = '1';
       }, 600);
 
@@ -347,6 +362,7 @@ library.forEach((song) => {
   playButton.addEventListener('click', () => {
     if (song.audio.paused) {
       pauseAllSongsExcept(song);
+      song.audio.volume = 0.65; // Set volume to 65%
       song.audio.play();
       playButton.innerHTML = 'Playing...';
       nowPlaying.innerHTML = song.name;
