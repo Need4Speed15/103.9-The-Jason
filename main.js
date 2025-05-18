@@ -65,36 +65,133 @@ theJasonAudio.addEventListener('ended', () => {
 // Create the Library Container
 let library = [];
 
+// const songs = [
+//   {
+//     name: 'Like The Others',
+//   },
+//   {
+//     name: 'Rebel Souls',
+//   },
+//   {
+//     name: 'You Are Listening To THE JASON',
+//     audio: 'audio/library/Transition1.mp3',
+//   },
+//   {
+//     name: 'You Are Listening To THE JASON',
+//     audio: 'audio/library/Transition2.mp3',
+//   },
+//   {
+//     name: 'You Are Listening To THE JASON',
+//     audio: 'audio/library/Transition3.mp3',
+//   },
+//   {
+//     name: 'Roll The Dice',
+//   },
+//   {
+//     name: 'Born to Burn',
+//   },
+//   {
+//     name: 'Live Wild Die Loud',
+//   },
+//   {
+//     name: 'Small Town Thunder',
+//   },
+// ];
+
+
 const songs = [
   {
-    name: 'Like The Others',
+    name: 'Jason- 911',
   },
   {
-    name: 'Rebel Souls',
+    name: 'Jason- always search',
   },
   {
-    name: 'You Are Listening To THE JASON',
-    audio: 'audio/library/Transition1.mp3',
+    name: 'Jason- Animals',
   },
   {
-    name: 'You Are Listening To THE JASON',
-    audio: 'audio/library/Transition2.mp3',
+    name: 'Jason- back on the line',
   },
   {
-    name: 'You Are Listening To THE JASON',
-    audio: 'audio/library/Transition3.mp3',
+    name: 'Jason- banshee scream',
   },
   {
-    name: 'Roll The Dice',
+    name: 'Jason- billions',
   },
   {
-    name: 'Born to Burn',
+    name: 'Jason- can\'t believe',
   },
   {
-    name: 'Live Wild Die Loud',
+    name: 'Jason- Cody come home',
   },
   {
-    name: 'Small Town Thunder',
+    name: 'Jason- cut your toe off',
+  },
+  {
+    name: 'Jason- debt collector',
+  },
+  {
+    name: 'Jason- dongle',
+  },
+  {
+    name: 'Jason- Down',
+  },
+  {
+    name: 'Jason- drive thru order',
+  },
+  {
+    name: 'Jason- dumb lil hook',
+  },
+  {
+    name: 'Jason- eat me',
+  },
+  {
+    name: 'Jason- eat me',
+  },
+  {
+    name: 'Jason- formal invitation',
+  },
+  {
+    name: 'Jason- goosebumps',
+  },
+  {
+    name: 'Jason- higher',
+  },
+  {
+    name: 'Jason- it is 8pm',
+  },
+  {
+    name: 'Jason- it it it it\'s time',
+  },
+  {
+    name: 'Jason- it\'s your mother',
+  },
+  {
+    name: 'Jason- kms',
+  },
+  {
+    name: 'Jason- mayday',
+  },
+  {
+    name: 'Jason- mongoose',
+  },
+  {
+    name: 'Jason- pickle ball coach',
+  },
+  {
+    name: 'Jason- poop on forehead',
+  },
+  {
+    name: 'Jason- Red handed',
+  },
+  {
+    name: 'Jason- Siamese twins',
+  },
+  {
+    name: 'Jason- When the sky falls',
+  },
+  {
+    name: 'Jason- When you call my name',
   },
 ];
 songs.forEach((song) => {
@@ -102,7 +199,7 @@ songs.forEach((song) => {
   if (song.audio) {
     audioObj = new Audio(song.audio);
   } else {
-    audioObj = new Audio(`audio/library/${song.name}.mp3`);
+    audioObj = new Audio(`audio/voicemails/${song.name}.m4a`);
   }
   audioObj.addEventListener('ended', () => {
     nowPlaying.innerHTML = '';
@@ -238,9 +335,11 @@ library.forEach((song) => {
 
   let songElement = document.createElement('div');
   songElement.classList.add('song');
+  // Replace "jason- " (case-insensitive) in the song name
+  const displayName = song.name.replace(/jason- /i, '');
   songElement.innerHTML = `
-    <div class="song-name">${song.name}
-    <button class="play-button" src="${song.audio}">Play</button>
+    <div class="song-name">${displayName}
+      <button class="play-button" src="${song.audio}">Play</button>
     </div>
   `;
   songLibrary.appendChild(songElement);
