@@ -1,5 +1,5 @@
 .library-wrapper {
-  width: 300px;
+  width: 30%;
   margin: 50px auto;
   padding: 30px;
   background-color: #fff;
@@ -22,10 +22,13 @@
   margin-bottom: 30px;
 }
 
-.songs-container {
+.songs-library {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: (1fr 1fr 1fr 1fr);
   gap: 15px;
+}
+
+.song {
 }
 
 .song-name {
