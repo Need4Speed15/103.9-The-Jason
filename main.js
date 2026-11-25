@@ -26,15 +26,89 @@ const stationStatus = document.querySelector('[data-station-status]');
 const stopButton = document.querySelector('[data-stop]');
 const idleTitle = trackStatus?.textContent;
 const clipButtons = new Map();
+const progress = document.querySelector('.archive-progress');
+const seek = progress?.querySelector('input');
+const meterPattern = [12, 24, 42, 27, 56, 36, 70, 45, 82, 60, 92, 64, 46, 77, 53, 31, 48, 22, 34, 13];
+// Keep the element that the user started so the live queue can advance without another gesture.
+const audio = new Audio();
+
+const transmission = document.createElement('div');
+transmission.className = 'transmission';
+transmission.setAttribute('aria-hidden', 'true');
+transmission.innerHTML =
+  '<div class="transmission-wash"></div><div class="transmission-rings"><i></i><i></i><i></i></div>' +
+  '<div class="transmission-readout"><img src="images/Logo.png" alt=""><span>Listen live</span></div>' +
+  '<div class="transmission-meter">' + meterPattern.map((level, index) =>
+    '<i style="--level:' + level + '%;--beat:' + index + '"></i>'
+  ).join('') + '</div>';
+document.body.append(transmission);
+
+const stationHUD = document.createElement('p');
+stationHUD.className = 'station-hud';
+stationHUD.setAttribute('aria-hidden', 'true');
+stationHUD.hidden = true;
+if (!trackStatus) document.body.append(stationHUD);
 
 let playback = null;
 let queue = [];
 let queueIndex = 0;
+let broadcastEffect = null;
+
+function stopBroadcastEffect() {
+  if (!broadcastEffect) return;
+  clearTimeout(broadcastEffect.timer);
+  transmission.removeAttribute('data-broadcast');
+  broadcastEffect = null;
+}
+
+function startBroadcastEffect(mode) {
+  stopBroadcastEffect();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Use a fresh animation timeline when the listener switches modes quickly.
+  const effect = { timer: 0 };
+  broadcastEffect = effect;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (effect !== broadcastEffect || playback?.mode !== mode) return;
+    transmission.dataset.broadcast = mode;
+    effect.timer = setTimeout(stopBroadcastEffect, 2800);
+  }));
+}
+
+function formatTime(time) {
+  const seconds = Math.floor(time);
+  return Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2, '0');
+}
+
+function updateProgress() {
+  if (!progress) return;
+  const audio = playback?.mode === 'clip' ? playback.audio : null;
+  const available = Boolean(audio && Number.isFinite(audio.duration) && audio.duration > 0);
+  progress.hidden = !available;
+  if (!available) return;
+  seek.max = String(audio.duration);
+  seek.value = String(audio.currentTime);
+  progress.style.setProperty('--progress', (100 * audio.currentTime / audio.duration) + '%');
+  seek.setAttribute('aria-valuetext', formatTime(audio.currentTime) + ' of ' + formatTime(audio.duration));
+  progress.querySelector('[data-elapsed]').textContent = formatTime(audio.currentTime);
+  progress.querySelector('[data-duration]').textContent = formatTime(audio.duration);
+}
+
+seek?.addEventListener('input', () => {
+  if (playback?.mode !== 'clip') return;
+  playback.audio.currentTime = Number(seek.value);
+  updateProgress();
+});
 
 function updatePlayer(message) {
   const stationIDActive = playback?.mode === 'id';
   const live = playback?.mode === 'live';
   document.body.toggleAttribute('data-playing', Boolean(playback?.started));
+  if (playback) {
+    document.body.dataset.playback = playback.mode;
+  } else {
+    document.body.removeAttribute('data-playback');
+  }
   logoButton.setAttribute('aria-pressed', String(stationIDActive));
   logoButton.setAttribute('aria-label', (stationIDActive ? 'Stop' : 'Play') + ' the 103.9 The Jason station ID');
   logoButton.title = stationIDActive ? 'Stop station ID' : 'Play station ID';
@@ -58,35 +132,43 @@ function updatePlayer(message) {
     }
     stopButton.hidden = !playback;
   }
+  const title = message ?? (playback
+    ? (playback.started ? playback.track.title : 'Loading ' + playback.track.title + '…')
+    : idleTitle ?? '');
   if (trackStatus) {
-    trackStatus.textContent = message ?? (playback
-      ? (playback.started ? playback.track.title : 'Loading ' + playback.track.title + '…')
-      : idleTitle);
-  } else {
-    stationStatus.textContent = message ?? (stationIDActive ? 'Playing the station ID.' : '');
+    if (trackStatus.textContent !== title) trackStatus.textContent = title;
+  } else if (stationStatus.textContent !== title) {
+    stationStatus.textContent = title;
+    stationHUD.textContent = title;
+    stationHUD.hidden = !title;
   }
+  updateProgress();
 }
 
 function stopPlayback() {
   const previous = playback;
   playback = null;
   if (previous) {
-    previous.audio.pause();
-    previous.audio.removeAttribute('src');
-    previous.audio.load();
+    previous.listeners.abort();
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
   }
 }
 
 function play(track, mode) {
-  stopPlayback();
-  const audio = new Audio();
-  const current = { audio, track, mode, started: false };
+  if (playback?.mode !== mode) stopBroadcastEffect();
+  playback?.listeners.abort();
+  const listeners = new AbortController();
+  const current = { audio, track, mode, started: false, listeners };
   playback = current;
+  audio.src = track.path;
   audio.volume = track.volume;
   updatePlayer();
 
   function onError() {
     if (playback !== current) return;
+    stopBroadcastEffect();
     stopPlayback();
     updatePlayer('Couldn’t play this audio. Try again.');
   }
@@ -95,18 +177,25 @@ function play(track, mode) {
     if (playback !== current) return;
     current.started = true;
     updatePlayer();
-  });
-  audio.addEventListener('error', onError, { once: true });
+  }, { signal: listeners.signal });
+  if (mode === 'clip') {
+    for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'seeked']) {
+      audio.addEventListener(event, () => {
+        if (playback === current) updateProgress();
+      }, { signal: listeners.signal });
+    }
+  }
+  audio.addEventListener('error', onError, { once: true, signal: listeners.signal });
   audio.addEventListener('ended', () => {
     if (playback !== current) return;
     if (mode === 'live') {
       playNextLiveTrack();
     } else {
+      stopBroadcastEffect();
       stopPlayback();
       updatePlayer();
     }
-  }, { once: true });
-  audio.src = track.path;
+  }, { once: true, signal: listeners.signal });
   audio.play().catch(onError);
 }
 
@@ -124,25 +213,28 @@ function playNextLiveTrack() {
 
 function togglePlayback(track, mode) {
   if (playback?.mode === mode && (mode === 'live' || playback.track === track)) {
-    stopPlayback();
-    updatePlayer();
+    resetPlayer();
   } else {
     if (mode === 'live') queue = [];
     play(track, mode);
+    if (mode !== 'clip') startBroadcastEffect(mode);
   }
+}
+
+function resetPlayer() {
+  stopBroadcastEffect();
+  stopPlayback();
+  updatePlayer();
 }
 
 logoButton.addEventListener('click', () => togglePlayback(stationID, 'id'));
 for (const button of liveButtons) {
   button.addEventListener('click', () => togglePlayback(intro, 'live'));
 }
-stopButton?.addEventListener('click', () => {
-  stopPlayback();
-  updatePlayer();
-});
-window.addEventListener('pagehide', () => {
-  stopPlayback();
-  updatePlayer();
+stopButton?.addEventListener('click', resetPlayer);
+window.addEventListener('pagehide', resetPlayer);
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') stopBroadcastEffect();
 });
 
 const iconContainer = document.querySelector('.genre-icons');
@@ -166,7 +258,13 @@ if (songLibrary) {
   for (const clip of clips) {
     const row = document.createElement('li');
     row.className = 'song';
-    row.innerHTML = '<span class="song-name"></span><button type="button" class="button clip-button" aria-pressed="false"><span class="control-icon play-icon" aria-hidden="true"></span><span class="clip-label">Play</span></button>';
+    const patternOffset = clip.title.length % meterPattern.length;
+    row.innerHTML = '<span class="clip-reel" aria-hidden="true"></span><span class="song-name"></span>' +
+      '<span class="clip-wave" aria-hidden="true">' + meterPattern.map((_, index) => {
+        const level = meterPattern[(index + patternOffset) % meterPattern.length];
+        return '<i style="--level:' + level + '%;--beat:' + index + '"></i>';
+      }).join('') + '</span>' +
+      '<button type="button" class="button clip-button" aria-pressed="false"><span class="control-icon play-icon" aria-hidden="true"></span><span class="clip-label">Play</span></button>';
     row.querySelector('.song-name').textContent = clip.title;
     const button = row.querySelector('button');
     button.setAttribute('aria-label', 'Play ' + clip.title);
@@ -190,6 +288,19 @@ if (songLibrary) {
 
   search.addEventListener('input', filterClips);
   filterClips();
+}
+
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const reveal = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('motion-arrival');
+      observer.unobserve(entry.target);
+    }
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.show, .station-story, .story-notes, .contact-form, .archive-head')
+    .forEach((element) => reveal.observe(element));
 }
 
 const contactForm = document.querySelector('.contact-form');

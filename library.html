@@ -22,7 +22,7 @@
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
       </nav>
-      <a class="button outline header-live" href="index.html#listen-live"><span class="signal-light" aria-hidden="true"></span>Listen live</a>
+      <button type="button" class="button outline header-live" data-live><span class="signal-light" aria-hidden="true"></span><span data-live-label>Listen live</span></button>
     </div>
     <p class="sr-only" role="status" data-station-status></p>
   </header>
@@ -33,7 +33,9 @@
         <h1 id="page-title">Song <em>library.</em></h1>
         <p class="lede">Explore the voicemail collection and listen to any clip on demand.</p>
       </div>
-      <img class="library-art" src="images/Genre Icons/Record Icon.png" alt="" width="145" height="145">
+      <div class="archive-art" aria-hidden="true">
+        <div class="archive-tape"><i></i><i></i><span></span></div>
+      </div>
     </section>
     <section class="shell archive" aria-label="Voicemail collection">
       <div class="archive-head">
@@ -47,6 +49,11 @@
         <div class="player-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
         <div class="player-details"><p class="eyebrow">Now playing</p><p class="track-title" data-track role="status">Select a clip to listen</p></div>
         <button type="button" class="button outline archive-stop" data-stop hidden>Stop playback</button>
+        <div class="archive-progress" hidden>
+          <span data-elapsed aria-hidden="true">0:00</span>
+          <input type="range" aria-label="Clip playback position" min="0" max="0" step="0.1" value="0">
+          <span data-duration aria-hidden="true">0:00</span>
+        </div>
       </div>
       <ul class="song-library" aria-label="Audio clips"></ul>
       <p class="empty-state" hidden>No clips match your search.</p>
