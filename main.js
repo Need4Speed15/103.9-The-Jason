@@ -1,395 +1,205 @@
+const clips = [
+  '911', 'always search', 'Animals', 'back on the line', 'banshee scream',
+  'billions', 'cant believe', 'Cody come home', 'cut your toe off', 'debt collector',
+  'dongle', 'Down', 'drive thru order', 'dumb lil hook', 'eat me', 'formal invitation',
+  'goosebumps', 'higher', 'it is 8pm', 'it it it its time', 'its your mother', 'kms',
+  'mayday', 'mongoose', 'pickle ball coach', 'poop on forehead', 'Red handed',
+  'Siamese twins', 'When the sky falls', 'When you call my name',
+].sort((first, second) => first.localeCompare(second)).map((title) => ({
+  title,
+  path: 'audio/voicemails/Jason- ' + title + '.m4a',
+  volume: 0.65,
+}));
 
-const nowPlaying = document.querySelector('.now-playing-song');
+const stationID = { title: '103.9 The Jason', path: 'audio/103.9 The Jason.mp3', volume: 1 };
+const intro = { title: 'Welcome to 103.9 The Jason', path: 'audio/103.9 The Jason Intro.mp3', volume: 0.4 };
+const breaks = [1, 2, 3].map((number) => ({
+  title: 'You Are Listening To THE JASON',
+  path: 'audio/voicemails/Transition' + number + '.mp3',
+  volume: 0.65,
+}));
 
+const logoButton = document.querySelector('.logo-button');
+const liveButtons = document.querySelectorAll('[data-live]');
+const trackStatus = document.querySelector('[data-track]');
+const stationStatus = document.querySelector('[data-station-status]');
+const stopButton = document.querySelector('[data-stop]');
+const idleTitle = trackStatus?.textContent;
+const clipButtons = new Map();
 
-// Create the Genre Icons Container
-let genreIcons = [
-  {
-    name: 'Country Icon',
-    file: 'images/Genre Icons/Country Icon.png',
-  },
-  {
-    name: 'Guitar Icon',
-    file: 'images/Genre Icons/Guitar Icon.png',
-  },
-  {
-    name: 'Mic Icon',
-    file: 'images/Genre Icons/Mic Icon.png',
-  },
-  {
-    name: 'Music Note Icon',
-    file: 'images/Genre Icons/Music Note Icon.png',
-  },
-  {
-    name: 'Radio Icon',
-    file: 'images/Genre Icons/Radio Icon.png',
-  },
-  {
-    name: 'Record Icon',
-    file: 'images/Genre Icons/Record Icon.png',
-  },
-]
+let playback = null;
+let queue = [];
+let queueIndex = 0;
 
-let genreIconsElement = document.querySelector('.genre-icons-container')
-let genreIconsList = ''
-genreIcons.forEach((icon) => {
-  genreIconsList += `
-    <div class="${icon.name.replace(/\s+/g, '-').toLowerCase()}-container">
-      <img class="${icon.name.replace(/\s+/g, '-').toLowerCase()}" src="${icon.file}" alt="${icon.name}">
-    </div>
-  `
-});
-if (genreIconsElement) {
-  genreIconsElement.innerHTML = genreIconsList;
-}
+function updatePlayer(message) {
+  const stationIDActive = playback?.mode === 'id';
+  const live = playback?.mode === 'live';
+  document.body.toggleAttribute('data-playing', Boolean(playback?.started));
+  logoButton.setAttribute('aria-pressed', String(stationIDActive));
+  logoButton.setAttribute('aria-label', (stationIDActive ? 'Stop' : 'Play') + ' the 103.9 The Jason station ID');
+  logoButton.title = stationIDActive ? 'Stop station ID' : 'Play station ID';
 
+  for (const button of liveButtons) {
+    button.querySelector('[data-live-label]').textContent = live ? 'Stop live' : 'Listen live';
+    button.querySelector('.play-icon')?.classList.toggle('is-playing', live);
+  }
+  for (const [clip, button] of clipButtons) {
+    const active = playback?.mode === 'clip' && playback.track === clip;
+    button.setAttribute('aria-pressed', String(active));
+    button.setAttribute('aria-label', (active ? 'Stop ' : 'Play ') + clip.title);
+    button.querySelector('.clip-label').textContent = active ? 'Stop' : 'Play';
+    button.querySelector('.play-icon').classList.toggle('is-playing', active);
+    button.closest('.song').toggleAttribute('data-active', active);
+  }
 
-//103.9 The Jason Button audio
-let theJasonButton = document.querySelector('.logo-button');
-let theJasonAudio = new Audio('audio/103.9 The Jason.mp3');
-theJasonButton.addEventListener('click', () => {
-  if (theJasonAudio.paused) {
-    theJasonAudio.play();
-    nowPlaying.innerHTML = '103.9 The Jason';
-    nowPlaying.style.opacity = '1';
+  if (stopButton) {
+    if (!playback && document.activeElement === stopButton) {
+      document.querySelector('#track-search').focus();
+    }
+    stopButton.hidden = !playback;
+  }
+  if (trackStatus) {
+    trackStatus.textContent = message ?? (playback
+      ? (playback.started ? playback.track.title : 'Loading ' + playback.track.title + '…')
+      : idleTitle);
   } else {
-    theJasonAudio.pause();
-    nowPlaying.style.opacity = '0';
-    theJasonAudio.currentTime = 0;
+    stationStatus.textContent = message ?? (stationIDActive ? 'Playing the station ID.' : '');
   }
-});
-theJasonAudio.addEventListener('ended', () => {
-  nowPlaying.style.opacity = '0';
-});
+}
 
-// Create the Library Container
-let library = [];
+function stopPlayback() {
+  const previous = playback;
+  playback = null;
+  if (previous) {
+    previous.audio.pause();
+    previous.audio.removeAttribute('src');
+    previous.audio.load();
+  }
+}
 
-// const songs = [
-//   {
-//     name: 'Like The Others',
-//   },
-//   {
-//     name: 'Rebel Souls',
-//   },
-//   {
-//     name: 'You Are Listening To THE JASON',
-//     audio: 'audio/library/Transition1.mp3',
-//   },
-//   {
-//     name: 'You Are Listening To THE JASON',
-//     audio: 'audio/library/Transition2.mp3',
-//   },
-//   {
-//     name: 'You Are Listening To THE JASON',
-//     audio: 'audio/library/Transition3.mp3',
-//   },
-//   {
-//     name: 'Roll The Dice',
-//   },
-//   {
-//     name: 'Born to Burn',
-//   },
-//   {
-//     name: 'Live Wild Die Loud',
-//   },
-//   {
-//     name: 'Small Town Thunder',
-//   },
-// ];
+function play(track, mode) {
+  stopPlayback();
+  const audio = new Audio();
+  const current = { audio, track, mode, started: false };
+  playback = current;
+  audio.volume = track.volume;
+  updatePlayer();
 
+  function onError() {
+    if (playback !== current) return;
+    stopPlayback();
+    updatePlayer('Couldn’t play this audio. Try again.');
+  }
 
-const songs = [
-  {
-    name: 'Jason- 911',
-  },
-  {
-    name: 'Jason- always search',
-  },
-  {
-    name: 'Jason- Animals',
-  },
-  {
-    name: 'Jason- back on the line',
-  },
-  {
-    name: 'Jason- banshee scream',
-  },
-  {
-    name: 'Jason- billions',
-  },
-  {
-    name: 'Jason- cant believe',
-  },
-  {
-    name: 'Jason- Cody come home',
-  },
-  {
-    name: 'Jason- cut your toe off',
-  },
-  {
-    name: 'Jason- debt collector',
-  },
-  {
-    name: 'Jason- dongle',
-  },
-  {
-    name: 'Jason- Down',
-  },
-  {
-    name: 'Jason- drive thru order',
-  },
-  {
-    name: 'Jason- dumb lil hook',
-  },
-  {
-    name: 'Jason- eat me',
-  },
-  {
-    name: 'Jason- formal invitation',
-  },
-  {
-    name: 'Jason- goosebumps',
-  },
-  {
-    name: 'Jason- higher',
-  },
-  {
-    name: 'Jason- it is 8pm',
-  },
-  {
-    name: 'Jason- it it it its time',
-  },
-  {
-    name: 'Jason- its your mother',
-  },
-  {
-    name: 'Jason- kms',
-  },
-  {
-    name: 'Jason- mayday',
-  },
-  {
-    name: 'Jason- mongoose',
-  },
-  {
-    name: 'Jason- pickle ball coach',
-  },
-  {
-    name: 'Jason- poop on forehead',
-  },
-  {
-    name: 'Jason- Red handed',
-  },
-  {
-    name: 'Jason- Siamese twins',
-  },
-  {
-    name: 'Jason- When the sky falls',
-  },
-  {
-    name: 'Jason- When you call my name',
-  },
-  {
-    name: 'You Are Listening To THE JASON',
-    audio: 'audio/voicemails/Transition1.mp3',
-  },
-  {
-    name: 'You Are Listening To THE JASON',
-    audio: 'audio/voicemails/Transition2.mp3',
-  },
-  {
-    name: 'You Are Listening To THE JASON',
-    audio: 'audio/voicemails/Transition3.mp3',
-  },
-];
-songs.forEach((song) => {
-  let audioObj;
-  if (song.audio) {
-    audioObj = new Audio(song.audio);
+  audio.addEventListener('playing', () => {
+    if (playback !== current) return;
+    current.started = true;
+    updatePlayer();
+  });
+  audio.addEventListener('error', onError, { once: true });
+  audio.addEventListener('ended', () => {
+    if (playback !== current) return;
+    if (mode === 'live') {
+      playNextLiveTrack();
+    } else {
+      stopPlayback();
+      updatePlayer();
+    }
+  }, { once: true });
+  audio.src = track.path;
+  audio.play().catch(onError);
+}
+
+function playNextLiveTrack() {
+  if (queueIndex >= queue.length) {
+    queue = [...clips, ...breaks];
+    for (let index = queue.length - 1; index > 0; index--) {
+      const pick = Math.floor(Math.random() * (index + 1));
+      [queue[index], queue[pick]] = [queue[pick], queue[index]];
+    }
+    queueIndex = 0;
+  }
+  play(queue[queueIndex++], 'live');
+}
+
+function togglePlayback(track, mode) {
+  if (playback?.mode === mode && (mode === 'live' || playback.track === track)) {
+    stopPlayback();
+    updatePlayer();
   } else {
-    audioObj = new Audio(`audio/voicemails/${song.name}.m4a`);
-  }
-  audioObj.addEventListener('ended', () => {
-    nowPlaying.innerHTML = '';
-    nowPlaying.style.opacity = '0';
-  });
-  library.push({
-    name: song.name,
-    audio: audioObj,
-  });
-});
-
-//alphabetize the library
-library.sort((a, b) => {
-  if (a.name < b.name) return -1;
-  if (a.name > b.name) return 1;
-  return 0;
-});
-
-
-function shuffleLibrary() {
-  for (let i = library.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [library[i], library[j]] = [library[j], library[i]];
+    if (mode === 'live') queue = [];
+    play(track, mode);
   }
 }
 
-// Create interactive Live Buttons
-const introAudio = new Audio('audio/103.9 The Jason Intro.mp3');
-const liveNowButton = document.querySelector('.live-now-button');
-const listenLiveButton = document.querySelector('.listen-live-button');
-if (liveNowButton) {
-  liveNowButton.addEventListener('click', () => {
-    if (!isLiveNow) {
-      toggleLiveNow();
-      introAudio.currentTime = 0;
-      introAudio.volume = 0.4; // Set volume
-      introAudio.play();
-      nowPlaying.innerHTML = 'Welcome to 103.9 The Jason';
-      nowPlaying.style.opacity = '1';
-      introAudio.onended = () => {
-        goLive();
-        introAudio.onended = null;
-      };
-    } else {
-      introAudio.pause();
-      nowPlaying.innerHTML = '';
-      nowPlaying.style.opacity = '0';
-      toggleLiveNow();
-      library.forEach((song) => {
-        song.audio.pause();
-        song.audio.currentTime = 0;
-        song.audio.onended = null;
-      });
-    }
-  });
+logoButton.addEventListener('click', () => togglePlayback(stationID, 'id'));
+for (const button of liveButtons) {
+  button.addEventListener('click', () => togglePlayback(intro, 'live'));
 }
-if (listenLiveButton) {
-  listenLiveButton.addEventListener('click', () => {
-    if (!isLiveNow) {
-      toggleLiveNow();
-      introAudio.currentTime = 0;
-      introAudio.volume = 0.4; // Set volume 
-      introAudio.play();
-      nowPlaying.innerHTML = 'Welcome to 103.9 The Jason';
-      nowPlaying.style.opacity = '1';
-      introAudio.onended = () => {
-        goLive();
-        introAudio.onended = null;
-      };
-    } else {
-      introAudio.pause();
-      nowPlaying.innerHTML = '';
-      nowPlaying.style.opacity = '0';
-      toggleLiveNow();
-      library.forEach((song) => {
-        song.audio.pause();
-        song.audio.currentTime = 0;
-        song.audio.onended = null;
-      });
-    }
-  });
-}
+stopButton?.addEventListener('click', () => {
+  stopPlayback();
+  updatePlayer();
+});
+window.addEventListener('pagehide', () => {
+  stopPlayback();
+  updatePlayer();
+});
 
-//Main function to play songs
-let isLiveNow = false;
-function toggleLiveNow() {
-  isLiveNow = !isLiveNow;
-};
-
-function goLive(index = 0) {
-  if (!isLiveNow) {
-    nowPlaying.innerHTML = '';
-    library.forEach((song) => {
-      song.audio.pause();
-      song.audio.currentTime = 0;
-      song.audio.onended = null;
-    });
-  } else {
-    if (index === 0) {
-      shuffleLibrary();
-      library.forEach((song) => {
-        song.audio.pause();
-        song.audio.currentTime = 0;
-        song.audio.onended = null;
-      });
-    }
-
-    if (index < library.length) {
-      const song = library[index];
-      song.audio.volume = 0.65; // Set volume to 65%
-      song.audio.play();
-      setTimeout(() => {
-        nowPlaying.innerHTML = song.name.replace(/jason- /i, '');
-        nowPlaying.style.opacity = '1';
-      }, 600);
-
-      song.audio.onended = () => {
-        nowPlaying.innerHTML = '';
-        nowPlaying.style.opacity = '0';
-        goLive(index + 1);
-      };
-    } else {
-      // All songs finished
-      nowPlaying.innerHTML = '';
-      nowPlaying.style.opacity = '0';
-      goLive(0); // Restart the playlist
-    }
+const iconContainer = document.querySelector('.genre-icons');
+if (iconContainer) {
+  for (const name of ['Country', 'Guitar', 'Mic', 'Music Note', 'Radio', 'Record']) {
+    const image = document.createElement('img');
+    image.src = 'images/Genre Icons/' + name + ' Icon.png';
+    image.alt = name;
+    image.width = 34;
+    image.height = 34;
+    iconContainer.append(image);
   }
 }
 
-//create the song library layout
-let songLibrary = document.querySelector('.song-library');
-songLibrary.innerHTML = '';
-library.forEach((song) => {
-  if (song.name === "You Are Listening To THE JASON") return; // Skip this song
+const songLibrary = document.querySelector('.song-library');
+if (songLibrary) {
+  const search = document.querySelector('#track-search');
+  const results = document.querySelector('[data-results]');
+  const emptyState = document.querySelector('.empty-state');
 
-  let songElement = document.createElement('div');
-  songElement.classList.add('song');
-  // Replace "jason- " (case-insensitive) in the song name
-  const displayName = song.name.replace(/jason- /i, '');
-  songElement.innerHTML = `
-    <div class="song-name">${displayName}
-      <button class="play-button" src="${song.audio}">Play</button>
-    </div>
-  `;
-  songLibrary.appendChild(songElement);
-  let playButton = songElement.querySelector('.play-button');
-  playButton.addEventListener('click', () => {
-    if (song.audio.paused) {
-      pauseAllSongsExcept(song);
-      song.audio.volume = 0.65; // Set volume to 65%
-      song.audio.play();
-      playButton.innerHTML = 'Playing...';
-      nowPlaying.innerHTML = song.name;
-      nowPlaying.style.opacity = '1';
-    } else {
-      song.audio.pause();
-      playButton.innerHTML = 'Play';
-      nowPlaying.style.opacity = '0';
-      song.audio.currentTime = 0;
+  for (const clip of clips) {
+    const row = document.createElement('li');
+    row.className = 'song';
+    row.innerHTML = '<span class="song-name"></span><button type="button" class="button clip-button" aria-pressed="false"><span class="control-icon play-icon" aria-hidden="true"></span><span class="clip-label">Play</span></button>';
+    row.querySelector('.song-name').textContent = clip.title;
+    const button = row.querySelector('button');
+    button.setAttribute('aria-label', 'Play ' + clip.title);
+    button.addEventListener('click', () => togglePlayback(clip, 'clip'));
+    clipButtons.set(clip, button);
+    songLibrary.append(row);
+  }
+
+  function filterClips() {
+    const query = search.value.trim().toLowerCase();
+    let visible = 0;
+    for (const [clip, button] of clipButtons) {
+      const match = clip.title.toLowerCase().includes(query);
+      button.closest('.song').hidden = !match;
+      if (match) visible++;
     }
-  });
+    results.textContent = query ? visible + ' of ' + clips.length + ' clips' : clips.length + ' clips';
+    emptyState.hidden = visible !== 0;
+    songLibrary.hidden = visible === 0;
+  }
 
-  // Update play button when song ends
-  song.audio.addEventListener('ended', () => {
-    playButton.innerHTML = 'Play';
-    nowPlaying.style.opacity = '0';
-  });
-});
-
-// Function to pause all songs except the current one and update play buttons
-function pauseAllSongsExcept(currentSong) {
-  library.forEach((song, idx) => {
-    if (song !== currentSong) {
-      song.audio.pause();
-      song.audio.currentTime = 0;
-      song.audio.onended = null;
-      // Update play button UI
-      let btn = document.querySelectorAll('.play-button')[idx];
-      if (btn) btn.innerHTML = 'Play';
-    }
-  });
+  search.addEventListener('input', filterClips);
+  filterClips();
 }
 
+const contactForm = document.querySelector('.contact-form');
+if (contactForm) {
+  const response = contactForm.querySelector('.form-response');
+  contactForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    response.textContent = 'Expect to hear back whenever I feel like it.';
+  });
+  contactForm.addEventListener('input', () => {
+    response.textContent = '';
+  });
+}
